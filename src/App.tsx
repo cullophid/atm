@@ -183,7 +183,7 @@ class App extends React.Component {
               this.setState({ amountInput: Number(e.target.value) })
             }
           />
-          <button type="submit" className="withdraw-button"> withDraw </button>
+          <button type="submit" className="withdraw-button"> MAKE IT RAIN </button>
           <p className="error-message"> {this.state.error} </p>
         </form>
         <div className="payoutBoxes">
