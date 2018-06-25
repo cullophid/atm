@@ -1,4 +1,4 @@
-coding test for Coinify
+Free Money ATM
 
 ## run
 
