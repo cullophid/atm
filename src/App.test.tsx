@@ -5,23 +5,23 @@ it("withdraw returns the correct combination of coins and notes", () => {
   const newState = withdraw(state);
   expect(newState.payoutBoxes.notes).toEqual([
     {
+      amount: 1,
       type: MoneyType.Note,
       value: 500,
-      amount: 1
     }
   ]);
   expect(newState.payoutBoxes.largeCoins).toEqual([
     {
+      amount: 1,
+      size: 40,
       type: MoneyType.Coin,
       value: 20,
-      amount: 1,
-      size: 40
     },
     {
+      amount: 1,
       type: MoneyType.Coin,
       value: 2,
-      amount: 1,
-      size: 30
+      size: 30,
     }
   ]);
   expect(newState.payoutBoxes.smallCoins).toEqual([]);

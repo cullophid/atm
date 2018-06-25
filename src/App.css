@@ -1,28 +1,139 @@
-.App {
+.atm {
+  background: #f5f5f5;
+  margin: 20px auto;
+  width: 900px;
+  height: 500px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0px 10px 30px rgba(0,0,0,0.6);
+}
+@keyframes dropIn {
+  0% {
+    transform:translateY(-200%);
+    opacity: 1;
+  }
+  100% {
+    transform:translateY(0);
+    opacity: 1;
+  }
+}
+
+.header { 
+  box-sizing: border-box;
+  background: #f30e80;
+  color:white;
+  padding: 10px;
+  flex:0;
+  flex-shrink: 0;
+  flex-basis: 60px;
+  display:flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.title {
   text-align: center;
+  margin: 0;
+}
+.form {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items:  center;
+  padding: 60px 0;
 }
 
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 80px;
+.amountInput {
+  text-align: center;
+
+  background: none;
+  box-sizing: border-box;
+  border: 1px solid black;
+  font-size: 24px;
+  height: 60px;
+  width: 300px;
+  border-radius: 3px;
+  padding: 5px;
+  margin: 5px;
+}
+.withdraw-button {
+  box-sizing: border-box;
+  background: #f30e80;
+  box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.3);
+  height: 40px;
+  width: 300px;
+  margin: 5px;
+  color:white;
+  border-radius: 5px;
 }
 
-.App-header {
-  background-color: #222;
-  height: 150px;
-  padding: 20px;
-  color: white;
+.error-message {
+  height:30px;
+  color: red;
+  margin:0;
 }
 
-.App-title {
-  font-size: 1.5em;
+
+.payoutBoxes { 
+  overflow:hidden;
+  background: #ddd;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: stretch;
+  height: 200px;
+  box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.3) inset;
 }
 
-.App-intro {
-  font-size: large;
+.payoutBox {
+  overflow:auto;
+  flex-wrap: wrap;
+  flex:1;
+  padding:5px;
+  border: 1px solid #aaa;
+  display:flex;
+  flex-direction: row;
+
 }
 
-@keyframes App-logo-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+.note { 
+  opacity: 0;
+  animation-name: dropIn;
+  animation-duration: 300ms;
+  animation-fill-mode: forwards;
+  width: 50px;
+  height: 100px;
+  margin: 5px;
+  display: flex;
+  background: #4F890B;
+  color:white;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.3);
+}
+.coin { 
+  opacity: 0;
+  border-radius: 1000px;
+  animation-name: dropIn;
+  animation-duration: 300ms;
+  animation-fill-mode: forwards;
+  display: flex;
+  margin: 5px;
+  background: #FDBB3E;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  color:white;
+  justify-content: center;
+  align-items: center;
+}
+.note:nth-child(1), .coin:nth-child(1) { animation-delay: 100ms; }
+.note:nth-child(2), .coin:nth-child(2) { animation-delay: 200ms; }
+.note:nth-child(3), .coin:nth-child(3) { animation-delay: 300ms; }
+.note:nth-child(4), .coin:nth-child(4) { animation-delay: 400ms; }
+.note:nth-child(5), .coin:nth-child(5) { animation-delay: 500ms; }
+.note:nth-child(6), .coin:nth-child(6) { animation-delay: 600ms; }
+.note:nth-child(7), .coin:nth-child(7) { animation-delay: 700ms; }
+.note:nth-child(8), .coin:nth-child(8) { animation-delay: 800ms; }
+.value { 
+  text-align: center;
 }

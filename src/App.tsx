@@ -1,7 +1,8 @@
 import * as React from "react";
+import {range} from 'ramda';
 import "./App.css";
 
-import logo from "./logo.svg";
+const COIN_SCALE = 1.5; 
 
 export enum MoneyType {
   Note,
@@ -22,65 +23,68 @@ export type appState = {
     smallCoins: money[];
     notes: money[];
   };
+  error: string | null;
+
 };
 
 const initialCash: money[] = [
   {
     type: MoneyType.Note,
-    amount: 100,
+    amount: 10,
     value: 1000
   },
   {
     type: MoneyType.Note,
-    amount: 100,
+    amount: 10,
     value: 500
   },
   {
     type: MoneyType.Note,
-    amount: 100,
+    amount: 10,
     value: 200
   },
   {
     type: MoneyType.Note,
-    amount: 100,
+    amount: 10,
     value: 100
   },
   {
     type: MoneyType.Note,
-    amount: 100,
+    amount: 10,
     value: 50
   },
   {
     type: MoneyType.Coin,
-    amount: 100,
+    amount: 10,
     value: 20,
     size: 40
   },
   {
     type: MoneyType.Coin,
-    amount: 100,
+    amount: 10,
     value: 10,
     size: 20
   },
   {
     type: MoneyType.Coin,
-    amount: 100,
+    amount: 10,
     value: 5,
     size: 50
   },
   {
     type: MoneyType.Coin,
-    amount: 100,
+    amount: 10,
     value: 2,
     size: 30
   },
   {
     type: MoneyType.Coin,
-    amount: 100,
+    amount: 10,
     value: 1,
     size: 10
   }
 ];
+// Singe app state 
 export const defaultState = {
   amountInput: 0,
   cash: initialCash,
@@ -88,7 +92,8 @@ export const defaultState = {
     notes: [],
     largeCoins: [],
     smallCoins: []
-  }
+  },
+  error: null
 };
 
 export const withdraw = (state: appState) => {
@@ -97,10 +102,12 @@ export const withdraw = (state: appState) => {
   const notes: money[] = [];
   const smallCoins: money[] = [];
   const largeCoins: money[] = [];
+
   let remainder = state.amountInput; /* Amount left to be payed out */
+
   // For each money type withdraw the closest amount that is a multiple of the value.
   state.cash.forEach(money => {
-    const payout = { ...money, amount: Math.floor(remainder / money.value) };
+    const payout = { ...money, amount: Math.min(Math.floor(remainder / money.value), money.amount) };
 
     remainder = remainder - payout.value * payout.amount; // Remove the amout withdrawn from the ramainder
     cash.push({ ...money, amount: money.amount - payout.amount });
@@ -115,8 +122,40 @@ export const withdraw = (state: appState) => {
       smallCoins.push(payout);
     }
   });
-  return { ...state, cash, payoutBoxes: { notes, smallCoins, largeCoins } };
+
+  // If there is still a remainder we cannot payout the correct amount. Return an error instead and return to the previous state.
+  if (remainder > 0) return {...state, error: "Not enough money to process your transaction", payoutBoxes: {largeCoins: [], smallCoins: [], notes: []}}
+  return { ...state, cash, payoutBoxes: { notes, smallCoins, largeCoins }, error: null };
 };
+
+
+const renderNote = (money:money, i:number) => 
+  <div key={`${money.value}_${i}`} className="note">
+    <span className="value">
+      {money.value}
+    </span>
+  </div>
+
+const renderCoin = (money:money, i:number) => {
+  let size = money.size ? money.size * COIN_SCALE : 20;
+  return (
+    <div key={`${money.value}_${i}`} className="coin" style={{width:size, height: size}}>
+      <span className="value">
+        {money.value}
+      </span>
+    </div>
+  )
+}
+
+const renderMoney = (money:money, i:number) => 
+  money.type == MoneyType.Note ? renderNote(money, i) : renderCoin(money, i) 
+
+// expand money so each entry has an amount of 1 then render each entry
+const renderBox =(money: money[]) =>
+  money.map((m) => 
+    range(0, m.amount)
+      .map(i=> renderMoney({...m, amount: 1}, i))
+  )
 
 class App extends React.Component {
   state: appState;
@@ -125,23 +164,39 @@ class App extends React.Component {
     this.state = defaultState;
   }
   public render() {
+    const onSubmit = (e:React.FormEvent) => {
+      e.preventDefault();
+      this.setState(withdraw)
+    }
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
+      <div className="atm">
+        <header className="header">
+          <h1 className="title">Free Money ATM!</h1>
         </header>
-        <p className="App-intro">
+        <form onSubmit={onSubmit} className="form">
           <input
+            className="amountInput"
             type="text"
+            autoFocus
             value={this.state.amountInput}
             onChange={e =>
               this.setState({ amountInput: Number(e.target.value) })
             }
           />
-          <button onClick={() => this.setState(withdraw)}> "withDraw" </button>
-          To get started, edit <code>src/App.tsx</code> and save to reload.
-        </p>
+          <button type="submit" className="withdraw-button"> withDraw </button>
+          <p className="error-message"> {this.state.error} </p>
+        </form>
+        <div className="payoutBoxes">
+          <div className="payoutBox">
+            {renderBox(this.state.payoutBoxes.notes)}
+          </div>
+          <div className="payoutBox">
+            {renderBox(this.state.payoutBoxes.largeCoins)}
+          </div>
+          <div className="payoutBox">
+            {renderBox(this.state.payoutBoxes.smallCoins)}
+          </div>
+        </div>
       </div>
     );
   }
